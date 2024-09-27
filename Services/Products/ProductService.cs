@@ -4,6 +4,7 @@ using Repositories.Products;
 using Services.Products.Create;
 using System.Net;
 using AutoMapper;
+using Services.ExceptionHandlers;
 
 namespace Services.Products;
 public class ProductService(
@@ -53,6 +54,9 @@ public class ProductService(
 
     public async Task<ServiceResult<CreateProductResponse>> CreateAsync(CreateProductRequest request)
     {
+
+        //throw new CriticalException("kritik bir hata!!");
+
         var anyProduct = await productRepository.Where(x => x.Name == request.Name).AnyAsync();
 
         if (!anyProduct)
