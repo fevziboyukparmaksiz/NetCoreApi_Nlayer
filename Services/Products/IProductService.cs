@@ -1,4 +1,6 @@
-﻿namespace Services.Products;
+﻿using Services.Products.Create;
+
+namespace Services.Products;
 public interface IProductService 
 {
     Task<ServiceResult<List<ProductDto>>> GetTopPriceProductsAsync(int count);
