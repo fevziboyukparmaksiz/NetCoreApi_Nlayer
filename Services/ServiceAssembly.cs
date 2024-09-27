@@ -1,3 +1,3 @@
-namespace App.Services;
+namespace Services;
 
 public struct ServiceAssembly;

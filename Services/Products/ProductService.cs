@@ -49,6 +49,13 @@ public class ProductService(
 
     public async Task<ServiceResult<CreateProductResponse>> CreateAsync(CreateProductRequest request)
     {
+        var anyProduct = await productRepository.Where(x => x.Name == request.Name).AnyAsync();
+
+        if (!anyProduct)
+        {
+            return ServiceResult<CreateProductResponse>.Fail("Ürün adý veritabanýnda bulunmaktadýr.");
+        }
+
         var product = new Product()
         {
             Name = request.Name,

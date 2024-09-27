@@ -1,4 +1,3 @@
-using App.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repositories.Products;

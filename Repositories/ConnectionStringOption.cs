@@ -1,4 +1,4 @@
-namespace App.Repositories;
+namespace Repositories;
 public class ConnectionStringOption
 {
     public const string Key = "ConnectionStrings";

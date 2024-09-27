@@ -1,5 +1,3 @@
-using App.Repositories;
-
 namespace Repositories;
 public class UnitOfWork(AppDbContext context) : IUnitOfWork
 {
