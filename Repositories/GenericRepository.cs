@@ -2,8 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace Repositories;
-public class GenericRepository<T>(AppDbContext context) 
-    : IGenericRepository<T> where T:class
+public class GenericRepository<T,TId>(AppDbContext context) 
+    : IGenericRepository<T,TId> where T:BaseEntity<TId> where TId : struct
 {
     private readonly DbSet<T> _dbset = context.Set<T>();
     public IQueryable<T> GetAll() 
@@ -12,7 +12,7 @@ public class GenericRepository<T>(AppDbContext context)
     public IQueryable<T> Where(Expression<Func<T, bool>> predicate)
         => _dbset.Where(predicate).AsNoTracking();
 
-    public async ValueTask<T?> GetById(int id)
+    public async ValueTask<T?> GetById(TId id)
         => await _dbset.FindAsync(id);
 
     public async ValueTask AddAsync(T entity)
@@ -23,4 +23,7 @@ public class GenericRepository<T>(AppDbContext context)
 
     public void Delete(T entity)
         => _dbset.Remove(entity);
+
+    public Task<bool> AnyAsync(TId id)
+        => _dbset.AnyAsync(x => x.Id.Equals(id));
 }

@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace Repositories.Categories;
-public class CategoryRepository(AppDbContext context) : GenericRepository<Category>(context),ICategoryRepository
+public class CategoryRepository(AppDbContext context) : GenericRepository<Category,int>(context),ICategoryRepository
 {
     public Task<Category> GetCategoryWithProductsAsync(int id)
     {

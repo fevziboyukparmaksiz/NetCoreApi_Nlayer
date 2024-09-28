@@ -80,21 +80,15 @@ public class ProductService(
         //Fast Fail
         //Guard Clauses
 
-        var product = await productRepository.GetById(id);
-
-        if (product is null)
-        {
-            return ServiceResult.Fail("Product not found", HttpStatusCode.NotFound);
-        }
-
-        var isProductNameExist = await productRepository.Where(x => x.Name == request.Name && x.Id != product.Id).AnyAsync();
+        var isProductNameExist = await productRepository.Where(x => x.Name == request.Name && x.Id != id).AnyAsync();
  
         if (isProductNameExist)
         {
             return ServiceResult.Fail("Ürün adý veritabanýnda bulunmaktadýr.");
         }
 
-        product = mapper.Map(request,product);
+        var product = mapper.Map<Product>(request);
+        product.Id = id;
 
         productRepository.Update(product);
         await unitOfWork.SaveChangesAsync();
@@ -105,11 +99,6 @@ public class ProductService(
     public async Task<ServiceResult> UpdateProductStockAsync(UpdateProductStockRequest request)
     {
         var product = await productRepository.GetById(request.ProductId);
-
-        if (product is null)
-        {
-            return ServiceResult.Fail("Product not found", HttpStatusCode.NotFound);
-        }
 
         product.Stock = request.Stock;
 
@@ -123,11 +112,6 @@ public class ProductService(
     public async Task<ServiceResult> DeleteAsync(int id)
     {
         var product = await productRepository.GetById(id);
-
-        if (product is null)
-        {
-           return ServiceResult.Fail("Product not found", HttpStatusCode.NotFound);
-        }
 
         productRepository.Delete(product!);
         await unitOfWork.SaveChangesAsync();

@@ -4,6 +4,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 using Services.Categories;
 using Services.ExceptionHandlers;
+using Services.Filters;
 using Services.Products;
 
 namespace Services.Extensions;
@@ -13,6 +14,7 @@ public static class ServiceExtensions
     {
         services.AddScoped<IProductService,ProductService>();
         services.AddScoped<ICategoryService, CategoryService>();
+        services.AddScoped(typeof(NotFoundFilter<,>));
 
         services.AddFluentValidationAutoValidation();
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
