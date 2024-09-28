@@ -13,6 +13,9 @@ public class CreateProductRequestValidator : AbstractValidator<CreateProductRequ
             .Length(3, 10).WithMessage("Ürün adý 3 ile 10 karakter arasýnda olmalýdýr.");
         //.Must(MustUniqueProductName).WithMessage("Ürün adý veritabanýnda bulunmaktadýr.");
 
+        RuleFor(x => x.CategoryId)
+            .GreaterThan(0).WithMessage("ürün kategori deðeri 0'dan büyük olmalýdýr.");
+
         RuleFor(x => x.Price)
             .GreaterThan(0).WithMessage("Ürün fiyatý 0'dan büyük olmalýdýr.");
 

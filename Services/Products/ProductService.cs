@@ -1,10 +1,11 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Repositories;
 using Repositories.Products;
 using Services.Products.Create;
+using Services.Products.Update;
+using Services.Products.UpdateStock;
 using System.Net;
-using AutoMapper;
-using Services.ExceptionHandlers;
 
 namespace Services.Products;
 public class ProductService(
@@ -57,19 +58,14 @@ public class ProductService(
 
         //throw new CriticalException("kritik bir hata!!");
 
-        var anyProduct = await productRepository.Where(x => x.Name == request.Name).AnyAsync();
+        var isProductNameExist = await productRepository.Where(x => x.Name == request.Name).AnyAsync();
 
-        if (!anyProduct)
+        if (isProductNameExist)
         {
             return ServiceResult<CreateProductResponse>.Fail("Ürün adý veritabanýnda bulunmaktadýr.");
         }
 
-        var product = new Product()
-        {
-            Name = request.Name,
-            Price = request.Price,
-            Stock = request.Stock
-        };
+        var product = mapper.Map<Product>(request);
 
         await productRepository.AddAsync(product);
         await unitOfWork.SaveChangesAsync();
@@ -91,9 +87,14 @@ public class ProductService(
             return ServiceResult.Fail("Product not found", HttpStatusCode.NotFound);
         }
 
-        product.Name = request.Name;
-        product.Price = request.Price;
-        product.Stock = request.Stock;
+        var isProductNameExist = await productRepository.Where(x => x.Name == request.Name && x.Id != product.Id).AnyAsync();
+ 
+        if (isProductNameExist)
+        {
+            return ServiceResult.Fail("Ürün adý veritabanýnda bulunmaktadýr.");
+        }
+
+        product = mapper.Map(request,product);
 
         productRepository.Update(product);
         await unitOfWork.SaveChangesAsync();
